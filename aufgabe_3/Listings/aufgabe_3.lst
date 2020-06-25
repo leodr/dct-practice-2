@@ -1,0 +1,149 @@
+A51 MACRO ASSEMBLER  AUFGABE 3                                                            06/25/2020 21:30:38 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\aufgabe_3.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE aufgabe_3.a51 SET(SMALL) DEBUG PRINT(.\Listings\aufgabe_3.lst) OBJECT(.
+                      \Objects\aufgabe_3.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     $title (Aufgabe 3)
+                       2     $debug 
+                       3     
+                       4     ; Der Prozessor läuft mit 60.000.000 MHz, also müssen
+                       5     ; um eine Sekunde zu überspringen ca. 60.000.000 Zyklen
+                       6     ; ausgeführt werden.
+                       7     
+                       8     ; 255 * 255 * 255 = 16.581.375
+  00FF                 9     ITERATOR EQU 255d
+                      10             
+----                  11     DSEG AT 40H
+                      12             ; In diesem Speicher wird die aktuelle Richtung
+                      13             ; des Systems gespeichert. 1 steht für
+                      14             ; Inkrementieren und 0 für Dekrementieren.
+0040                  15             direction: DS 1
+                      16                     
+                      17             ; In diesem Speicher wird der aktuelle Zähler-
+                      18             ; zustand gespeichert.
+0041                  19               counter: DS 1
+                      20                     
+----                  21     CSEG AT 0H
+0000 020050           22     ljmp main
+                      23     
+0050                  24     ORG 50h
+0050                  25         main:
+0050 020053           26                     ljmp loop
+                      27     
+0053                  28         loop:
+                      29                     ; Anzeigen des aktuellen Counter-standes
+0053 854180           30                     mov P0,counter
+                      31                     
+                      32                     ; Port 3 in den Akkumulator schrieben
+0056 E5B0             33                     mov a,P3
+                      34                     ; Bits außer dem 8. auf 0 setzen.
+0058 5480             35                     ANL a,#10000000b
+                      36                     
+                      37                     ; Wenn der Taster gedrückt ist wird die 
+                      38                     ; Richtung geändert
+005A 7002             39                     jnz toggledirection
+005C 0166             40                     ajmp count
+                      41                     
+005E                  42             toggledirection:
+                      43                     ; Die aktuelle Richtung in den Akkumulator
+                      44                     ; schreiben
+005E E540             45                     mov a,direction
+                      46                     ; Das letzte Bit umkehren
+0060 6401             47                     xrl a,#00000001b
+                      48                     ; Zustand des Akkus in direction schreiben
+0062 F540             49                     mov direction,a
+0064 0166             50                     ajmp count
+                      51             
+0066                  52             count:
+                      53                     ; Aktuelle Richtung in Akku schreiben
+0066 E540             54                     mov a,direction
+                      55                     ; Wenn Richtung 1 ist > Increment;
+                      56                     ; Wenn Richtung nicht 1 ist > Decrement;
+0068 7003             57                     jnz increment
+A51 MACRO ASSEMBLER  AUFGABE 3                                                            06/25/2020 21:30:38 PAGE     2
+
+006A 02007B           58                     ljmp decrement
+                      59             
+006D                  60             increment:
+                      61                     ; Counter in Akku schreiben und erhöhen
+006D E541             62                     mov a,counter
+006F 04               63                     inc a
+                      64                     
+                      65                     ; Die ersten 4 Bit auf 0 setzen um 4-Bit 
+                      66                     ; Zähler-verhalten zu erhalten
+0070 540F             67                     ANL a,#00001111b
+                      68                     
+                      69                     ; Akkuinhalt wieder in counter schreiben
+0072 F541             70                     mov counter,a
+                      71                     
+                      72                     ; 1s warten
+0074 1189             73                     ACALL wait
+0076 1189             74                     ACALL wait
+0078 020053           75                     ljmp loop
+                      76             
+007B                  77             decrement:
+                      78                     ; Counter in Akku schreiben und erhöhen
+007B E541             79                     mov a,counter
+007D 14               80                     dec a
+                      81                     
+                      82                     ; Die ersten 4 Bit auf 0 setzen um 4-Bit 
+                      83                     ; Zähler-verhalten zu erhalten
+007E 540F             84                     ANL a,#00FH
+                      85                     
+                      86                     ; Akkuinhalt wieder in counter schreiben
+0080 F541             87                     mov counter,a
+                      88                     
+                      89                     ; 1s warten
+0082 1189             90                     ACALL wait
+0084 1189             91                     ACALL wait
+0086 020053           92                     ljmp loop
+                      93     
+                      94             ; Jede Schleife läuft 255 mal, jedes djnz statement
+                      95             ; benötigt 2 Zyklen. Also dauert jeder Aufruf von
+                      96             ; wait ca. 30.000.000 Zyklen (ca. 0,5 Sekunden)
+0089                  97         wait:
+0089 ABFF             98             mov r3, ITERATOR
+008B                  99             Wait3:
+008B AAFF            100                 mov r2, ITERATOR
+008D                 101                 Wait2:
+008D A9FF            102                     mov r1, ITERATOR
+008F                 103                     Wait1:
+008F D9FE            104                         djnz r1, Wait1
+0091 DAFA            105                                     djnz r2, Wait2
+0093 DBF6            106                             djnz r3, Wait3
+0095 22              107                     RET
+                     108     END
+A51 MACRO ASSEMBLER  AUFGABE 3                                                            06/25/2020 21:30:38 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+COUNT. . . . . . .  C ADDR   0066H   A   
+COUNTER. . . . . .  D ADDR   0041H   A   
+DECREMENT. . . . .  C ADDR   007BH   A   
+DIRECTION. . . . .  D ADDR   0040H   A   
+INCREMENT. . . . .  C ADDR   006DH   A   
+ITERATOR . . . . .  N NUMB   00FFH   A   
+LOOP . . . . . . .  C ADDR   0053H   A   
+MAIN . . . . . . .  C ADDR   0050H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+TOGGLEDIRECTION. .  C ADDR   005EH   A   
+WAIT . . . . . . .  C ADDR   0089H   A   
+WAIT1. . . . . . .  C ADDR   008FH   A   
+WAIT2. . . . . . .  C ADDR   008DH   A   
+WAIT3. . . . . . .  C ADDR   008BH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

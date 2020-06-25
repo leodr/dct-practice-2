@@ -1,0 +1,47 @@
+A51 MACRO ASSEMBLER  AUFGABE 1                                                            06/25/2020 20:34:50 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\aufgabe_1.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE aufgabe_1.a51 SET(SMALL) DEBUG PRINT(.\Listings\aufgabe_1.lst) OBJECT(.
+                      \Objects\aufgabe_1.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     $title (Aufgabe 1)
+                       2     $debug 
+                       3     
+----                   4     CSEG AT 0h
+0000 020030            5     ljmp main
+                       6     
+0030                   7     ORG 30h
+0030                   8         main:
+                       9                     ; Port 3 auf Akkumulator übertragen
+0030 E5B0             10                     mov a,p3
+                      11                     
+                      12                     ; Inhalte des Akkumulators umkehren
+0032 64FF             13                     xrl a,#11111111b
+                      14                     
+                      15                     ; Inhalt des Akkumulators in die LEDs an Port 0 schreiben
+0034 F580             16                     mov p0,a
+                      17                     
+                      18                     ; Endlosschleife erschaffen
+0036 0130             19                     ajmp main
+                      20     END
+A51 MACRO ASSEMBLER  AUFGABE 1                                                            06/25/2020 20:34:50 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+MAIN . . . . . . .  C ADDR   0030H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

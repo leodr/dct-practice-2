@@ -1,0 +1,70 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    06/25/2020  21:14:41  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\aufgabe_2.obj TO .\Objects\aufgabe_2 PRINT (.\Listings\aufgabe_2.m51) RAMSIZE (256
+>> )
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\aufgabe_2.obj (AUFGABE_2)
+
+
+LINK MAP OF MODULE:  .\Objects\aufgabe_2 (AUFGABE_2)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0072H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\aufgabe_2 (AUFGABE_2)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        AUFGABE_2
+  N:00FFH         SYMBOL        ITERATION
+  C:0058H         SYMBOL        LOOP
+  C:0050H         SYMBOL        MAIN
+  D:0080H         SYMBOL        P0
+  C:0065H         SYMBOL        WAIT
+  C:006BH         SYMBOL        WAIT1
+  C:0069H         SYMBOL        WAIT2
+  C:0067H         SYMBOL        WAIT3
+  C:0000H         LINE#         12
+  C:0050H         LINE#         16
+  C:0053H         LINE#         21
+  C:0055H         LINE#         22
+  C:0058H         LINE#         28
+  C:005AH         LINE#         29
+  C:005CH         LINE#         32
+  C:005DH         LINE#         33
+  C:005EH         LINE#         34
+  C:005FH         LINE#         37
+  C:0061H         LINE#         40
+  C:0063H         LINE#         43
+  C:0065H         LINE#         49
+  C:0067H         LINE#         51
+  C:0069H         LINE#         53
+  C:006BH         LINE#         55
+  C:006DH         LINE#         56
+  C:006FH         LINE#         57
+  C:0071H         LINE#         58
+  -------         ENDMOD        AUFGABE_2
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2020  21:14:41  PAGE 2
+
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0025H BYTE ( 1%) *
+******************************************************************************
+
+Program Size: data=8.0 xdata=0 code=114
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

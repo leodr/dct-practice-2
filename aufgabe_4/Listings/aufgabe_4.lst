@@ -1,0 +1,147 @@
+A51 MACRO ASSEMBLER  AUFGABE 4                                                            06/25/2020 21:51:01 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\aufgabe_4.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE aufgabe_4.a51 SET(SMALL) DEBUG PRINT(.\Listings\aufgabe_4.lst) OBJECT(.
+                      \Objects\aufgabe_4.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     $title (Aufgabe 4)
+                       2     $debug 
+                       3             
+                       4     ; Der Prozessor läuft mit 60.000.000 MHz, also müssen
+                       5     ; um eine Sekunde zu überspringen ca. 60.000.000 Zyklen
+                       6     ; ausgeführt werden.
+                       7     
+                       8     ; 255 * 255 * 255 = 16.581.375
+  00FF                 9     ITERATOR EQU 255d
+                      10     
+----                  11     DSEG AT 30H
+                      12             ; 7 Byte reservieren um ASCII-Codes der
+                      13             ; 7 verschiedenen Zeichen zu speichern
+0030                  14             field: DS 7
+0037                  15             stack: DS 10
+                      16     
+----                  17     CSEG AT 0H
+0000 020050           18             ljmp startup
+                      19     
+0050                  20     ORG 50H
+0050                  21         startup:
+0050 758137           22                     mov sp,#stack
+0053 C2AF             23                     CLR EA
+0055 0157             24                     ajmp main
+                      25     
+0057                  26         main:
+                      27                     ; field-Bereich mit ASCII-Codes bestücken
+0057 116C             28                     ACALL write
+0059 8000             29                     jmp mloop
+                      30     
+005B                  31         mloop:
+                      32                     ; Register 0 auf erste Adressen der field
+                      33                     ; Bereiches zurücksetzen
+005B 7830             34                     mov r0,#field
+                      35                     
+                      36                     ; read-Loop aufrufen um Zeichenfolge einmal
+                      37                     ; durchzugehen
+005D 1161             38                     ACALL read
+                      39                     
+                      40                     ; Endlosschleife
+005F 80FA             41                     jmp mloop
+                      42     
+0061                  43         read:
+                      44                     ; 1s warten (jeweils 0,5 Sekunden)
+0061 1183             45                     acall wait
+0063 1183             46                     acall wait
+                      47                     
+                      48                     ; Inhalt des Zeichensatzes in Port 0 schreiben,
+                      49                     ; auf die der Inhalt von Register 0 gerade
+                      50                     ; zeigt.
+0065 8680             51                     mov p0,@r0
+                      52                     
+                      53                     ; Wert in Register 0 erhöhren
+0067 08               54                     INC r0
+                      55                     
+                      56                     ; Solange Register 0 nicht letztes Feld von field
+                      57                     ; erreicht, wiederholen.
+A51 MACRO ASSEMBLER  AUFGABE 4                                                            06/25/2020 21:51:01 PAGE     2
+
+0068 B837F6           58                     cjne r0,#037h,read
+006B 22               59                     RET
+                      60     
+006C                  61         write:
+006C 7930             62                     mov r1,#field
+                      63                     ; ASCII-Darstellung der Zahl 1
+006E 7701             64                     mov @r1,#1d
+0070 09               65                     INC r1
+                      66                     
+                      67                     ; ASCII-Darstellung der Zahl 2
+0071 7702             68                     mov @r1,#2d
+0073 09               69                     INC r1
+                      70                     
+                      71                     ; ASCII-Darstellung der Zahl 4
+0074 7704             72                     mov @r1,#4d
+0076 09               73                     INC r1
+                      74                     
+                      75                     ; ASCII-Darstellung der Zahl 8
+0077 7708             76                     mov @r1,#8d
+0079 09               77                     INC r1
+                      78                     
+                      79                     ; ASCII-Darstellung des Buchstaben 'a'
+007A 7761             80                     mov @r1,#97d
+007C 09               81                     INC r1
+                      82                     
+                      83                     ; ASCII-Darstellung des Buchstaben 'b'
+007D 7762             84                     mov @r1,#98d
+007F 09               85                     INC r1
+                      86                     
+                      87                     ; ASCII-Darstellung des Buchstaben 'c'
+0080 7763             88                     mov @r1,#99d
+0082 22               89                     RET
+                      90     
+                      91             ; Jede Schleife läuft 255 mal, jedes djnz statement
+                      92             ; benötigt 2 Zyklen. Also dauert jeder Aufruf von
+                      93             ; wait ca. 30.000.000 Zyklen (ca. 0,5 Sekunden)
+0083                  94         wait:
+0083 ABFF             95             mov r3, ITERATOR
+0085                  96             Wait3:
+0085 AAFF             97                 mov r2, ITERATOR
+0087                  98                 Wait2:
+0087 A9FF             99                     mov r1, ITERATOR
+0089                 100                     Wait1:
+0089 D9FE            101                         djnz r1, Wait1
+008B DAFA            102                         djnz r2, Wait2
+008D DBF6            103                         djnz r3, Wait3
+008F 22              104         RET
+                     105     
+                     106     END
+A51 MACRO ASSEMBLER  AUFGABE 4                                                            06/25/2020 21:51:01 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+FIELD. . . . . . .  D ADDR   0030H   A   
+ITERATOR . . . . .  N NUMB   00FFH   A   
+MAIN . . . . . . .  C ADDR   0057H   A   
+MLOOP. . . . . . .  C ADDR   005BH   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+READ . . . . . . .  C ADDR   0061H   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+STACK. . . . . . .  D ADDR   0037H   A   
+STARTUP. . . . . .  C ADDR   0050H   A   
+WAIT . . . . . . .  C ADDR   0083H   A   
+WAIT1. . . . . . .  C ADDR   0089H   A   
+WAIT2. . . . . . .  C ADDR   0087H   A   
+WAIT3. . . . . . .  C ADDR   0085H   A   
+WRITE. . . . . . .  C ADDR   006CH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

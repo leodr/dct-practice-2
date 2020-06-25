@@ -1,0 +1,93 @@
+A51 MACRO ASSEMBLER  AUFGABE 2                                                            06/25/2020 21:14:41 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\aufgabe_2.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE aufgabe_2.a51 SET(SMALL) DEBUG PRINT(.\Listings\aufgabe_2.lst) OBJECT(.
+                      \Objects\aufgabe_2.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     $title (Aufgabe 2)
+                       2     $debug 
+                       3             
+                       4     ; Der Prozessor läuft mit 60.000.000 MHz, also müssen
+                       5     ; um eine Sekunde zu überspringen ca. 60.000.000 Zyklen
+                       6     ; ausgeführt werden.
+                       7     
+                       8     ; 255 * 255 * 255 = 16.581.375
+  00FF                 9     ITERATION EQU 255d
+                      10     
+----                  11     CSEG AT 0H
+0000 020050           12     ljmp main
+                      13     
+0050                  14     ORG 50h
+0050                  15         main:
+0050 758000           16                     mov P0,#000H
+                      17                     
+                      18                     ; Wird dieses Byte in eine Richtung rotiert,
+                      19                     ; wechselt der Status des 1. Bit stetig zwischen
+                      20                     ; 0 und 1.
+0053 7DAA             21                     mov r5,#10101010b
+0055 020058           22                     ljmp loop
+                      23     
+0058                  24         loop:
+                      25                     ; Da jeder Aufruf von wait ca. 0,5 Sekunden
+                      26                     ; dauert rufen wir wait 2 mal auf, um 1 Sekunde
+                      27                     ; zu warten.
+0058 1165             28                     ACALL wait
+005A 1165             29                     ACALL wait
+                      30                     
+                      31                     ; Byte vom Register holen und rotieren
+005C ED               32                     mov a,r5
+005D 23               33                     RL a
+005E FD               34                     mov r5,a
+                      35                     
+                      36                     ; Alle Bit außer dem letzten auf 0 setzen
+005F 5401             37                     ANL a,#00000001b
+                      38                     
+                      39                     ; Rotiertes 1. Bit auf Port 0 schreiben
+0061 F580             40                     mov P0,a
+                      41                     
+                      42                     ; Endlosschleife aufrufen
+0063 0158             43                     ajmp loop
+                      44     
+                      45             ; Jede Schläufe läuft 255 mal, jedes djnz statement
+                      46             ; benötigt 2 Zyklen. Also dauert jeder Aufruf von
+                      47             ; wait ca. 30.000.000 Zyklen (ca. 0,5 Sekunden)
+0065                  48         wait:
+0065 ABFF             49             mov r3, ITERATION
+0067                  50             Wait3:
+0067 AAFF             51                 mov r2, ITERATION
+0069                  52                 Wait2:
+0069 A9FF             53                     mov r1, ITERATION
+006B                  54                     Wait1:
+006B D9FE             55                         djnz r1, Wait1
+006D DAFA             56                                     djnz r2, Wait2
+006F DBF6             57                             djnz r3, Wait3
+A51 MACRO ASSEMBLER  AUFGABE 2                                                            06/25/2020 21:14:41 PAGE     2
+
+0071 22               58                     RET
+                      59     END
+A51 MACRO ASSEMBLER  AUFGABE 2                                                            06/25/2020 21:14:41 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ITERATION. . . . .  N NUMB   00FFH   A   
+LOOP . . . . . . .  C ADDR   0058H   A   
+MAIN . . . . . . .  C ADDR   0050H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+WAIT . . . . . . .  C ADDR   0065H   A   
+WAIT1. . . . . . .  C ADDR   006BH   A   
+WAIT2. . . . . . .  C ADDR   0069H   A   
+WAIT3. . . . . . .  C ADDR   0067H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
